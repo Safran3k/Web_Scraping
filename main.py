@@ -1,6 +1,7 @@
 from scraper import Scraper
 from team import Team
 from filters import TeamFilter
+from visualization import plot_wins_over_time
 
 def get_user_choice():
     while True:
@@ -8,12 +9,13 @@ def get_user_choice():
         print("1. Team name")
         print("2. Year")
         print("3. Number of wins")
-        print("4. Exit")
-        choice = input("Select a filter type (1/2/3) or exit (4): ")
-        if choice in ["1", "2", "3", "4"]:
+        print("4. Analyze a team over time")
+        print("5. Exit")
+        choice = input("Select a filter type (1/2/3/4) or exit (5): ")
+        if choice in ["1", "2", "3", "4", "5"]:
             return choice
         else:
-            print("Invalid choice. Please select 1, 2, 3, or 4.")
+            print("Invalid choice. Please select 1, 2, 3, 4, or 5.")
 
 def filter_teams(teams):
     choice = get_user_choice()
@@ -38,8 +40,15 @@ def filter_teams(teams):
             except ValueError:
                 print("Invalid number. Please enter a valid number.")
     elif choice == "4":
+        while True:
+            team_name = input("Enter the name of the team you want to analyze (or type 'back' to return): ")
+            if team_name.lower() == 'back':
+                return None
+            plot_wins_over_time(teams, team_name)
+            return None
+    elif choice == "5":
         print("Exiting the program.")
-        return None
+        return "exit"
     
     return filtered_teams
 
@@ -59,7 +68,8 @@ if __name__ == "__main__":
     
     while True:
         filtered_teams = filter_teams(teams)
-        if filtered_teams is None:
+        if filtered_teams == "exit":
             break
-        print_teams(filtered_teams)
+        if filtered_teams:
+            print_teams(filtered_teams)
         print("\n---\n")
